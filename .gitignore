@@ -1,0 +1,4 @@
+build
+dist
+env
+gc_log_analyzer.egg-info
