@@ -3,13 +3,11 @@ import argparse
 from datetime import datetime
 from datetime import timedelta
 import math
-import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import os
 import platform
 import subprocess
-import sys
 
 # Ex
 # 2020-05-27T10:47:52.668+0000
@@ -88,7 +86,6 @@ def analyze_gc(filename, use_timestamps, topNum):
     topN = data.copy()
     # This line sorts the data by longest pause time in descending order ([::-1] does descending)
     topN = get_top_N(data, 1, topNum, lines)
-    topRows = []
     print("Top {} STW Times".format(topNum))
     [print("{} stopped: {}, waiting to stop {}".format(
         row[0], row[2], row[3])) for row in topN]
@@ -120,21 +117,19 @@ def while_replace(string):
         string = string.replace('  ', ' ')
     return string
 
-# Gets the top N
-#
-# Arguments:
-# - np_arr: the array to get the top N data for
-# - col_idx: The column index to sort by
-# - N: how many items to return
-# - raw_data: The rows which will be searched and returned back
-
-
 def get_top_N(np_arr, col_idx, N, raw_data):
+    '''Gets the top N values from the column
+
+    Arguments:
+        - np_arr: the array to get the top N data for
+        - col_idx: The column index to sort by
+        - N: how many items to return
+        - raw_data: The rows which will be searched and returned back
+    '''
     rows = []
     topN = np_arr.copy()
     # This line sorts the data by longest pause time in descending order ([::-1] does descending)
     topN = topN[topN[:, col_idx].argsort()[::-1]]
-    topRows = []
     for i in range(N):
         val = topN[i, 0]
         # Lookup index in data where the value occurs
@@ -267,6 +262,5 @@ def main():
     elif args.logtype == 'safepoint':
         analyze_safepoint(args.filename, int(
             args.top), startDatetime=get_jvm_start_timestamp(args.use_gc_timestamps))
-
 
 main()
